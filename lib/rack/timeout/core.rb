@@ -120,7 +120,7 @@ module Rack
         app_thread.raise(RequestTimeoutException.new(env), "Request #{"waited #{info.ms(:wait)}, then " if info.wait}ran for longer than #{info.ms(:timeout)}")
       end
 
-      response = timeout.timeout(info.timeout) do           # perform request with timeout
+      response = timeout.timeout(info) do                   # perform request with timeout
         begin  @app.call(env)                               # boom, send request down the middleware chain
         rescue RequestTimeoutException => e                 # will actually hardly ever get to this point because frameworks tend to catch this. see README for more
           raise RequestTimeoutError.new(env), e.message, e.backtrace  # but in case it does get here, re-raise RequestTimeoutException as RequestTimeoutError
